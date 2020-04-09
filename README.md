@@ -1,32 +1,31 @@
 # cdd
 
-*Change Directory Directly*
+> *Change Directory Directly*
+
+This is a fork of  [algon-320/cdd-bash](https://github.com/algon-320/cdd-bash), which aims for zsh
+
 
 ## Demo
 
 ![Demo image](demo.png)
 
-## Features
-
-- jump to your favorite directory in a moment (wherever you are)
-- bash scripts
-- autocompletion supported
 
 ## Requirement
 
-- bash
+- zsh
 
 ## Installation
 
-1. Copy `cdd.sh` and `cdd-manager.sh` somewhere (suppose they are in `path/to/scripts`).
-```
-$ cp cdd.sh cdd-manager.sh path/to/scripts
-```
+1. Copy `cdd` and `cdd-manager` somewhere (suppose they are in `path/to/scripts`).
+2. Copy `_cdd` and `_cdd-manager` in fpath (suppose they are in `fpath`).
 
-2. Add following lines to your `.bashrc`.
+
+2. Add following lines to your `.zshrc`.
 ```sh
-source path/to/scripts/cdd.sh
-source path/to/scripts/cdd-manager.sh
+autoload -Uz path/to/scripts/cdd
+autoload -Uz path/to/scripts/cdd-manager
+autoload -Uz compinit
+compinit -u
 ```
 
 3. (OPTIONAL) Edit `CDD_DIR` in `cdd.sh`.
@@ -66,7 +65,7 @@ $ cdd your_favorite_name
 ### Remove
 ##### using cdd-manager
 ```
-$ cdd-manager remove your_favorite_name
+$ cdd-manager remove your_favorite_name...
 ```
 
 ##### manually
@@ -79,5 +78,8 @@ $ rm ${CDD_DIR}/your_favorite_name
 ```
 $ cdd-manager list
 your_favorite_name --> /full/path/to/target/directory
+
+$ cdd [-l,--list]
+your_favorite_name --> /full/path/to/target/directory 
 ```
 
