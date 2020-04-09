@@ -1,0 +1,19 @@
+#compdef cdd
+
+function _cdd () {
+    local context curcontext=$curcontext state line
+    declare -A opt_args
+    local ret=1
+    
+    _arguments -C \
+    '(- : *)'{-h,--help}'[show help]' \
+    '(- : *)'{-l,--list}'[show file list]'\
+     '1: :__cdd_search_link' \
+    && ret=0
+   
+    return ret
+}
+
+__cdd_search_link() {
+    _files -W "$CDD_DIR"
+}

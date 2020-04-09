@@ -1,0 +1,59 @@
+function cdd() {
+
+    local CDDMAN_USAGE=$(cat << HEREDOC
+Usage:
+	cdd-manager add <target-directory> [<link-name>]
+	cdd-manager remove <link-name>
+	cdd-manager list
+HEREDOC
+)
+  local CDDMAN_LIST_FILL=$(printf "%0.1s" -{0..80})
+  local CDDMAN_LIST_FMT="$(tput bold)%s$(tput sgr0) %0.*s---> %s\\n"
+    
+    # make CDD_DIR if it doesn't exist
+    if [ ! -d "$CDD_DIR" ]; then
+        mkdir -v "$CDD_DIR"
+    fi
+    
+    __cdd_help() {
+        echo 'Usage: cdd [OPTION] [FILE]'
+        echo
+        echo 'OPTION'
+        echo '  -h, --help    show help'
+    }
+
+    __cdd_list(){
+        local max_len=0
+        local links=( $(_cdd_search_link) )
+        for f in ${links[@]}; do
+            if [ $max_len -lt ${#f} ]; then
+            max_len=${#f}
+            fi
+        done
+
+        for f in ${links[@]}; do
+            local name=$(basename "$f")
+            local p=$(readlink -f "$f")
+            printf "$CDDMAN_LIST_FMT" "$name" $((max_len - ${#f})) "$CDDMAN_LIST_FILL" "$p"
+        done
+    }
+    
+    while [ $1 ]; do
+        case $1 in
+            -h|--help)
+                __cdd_help
+                return
+            ;;
+            -l|--list)
+                __cdd_list
+                return
+            ;;
+            *)
+                CDPATH="$CDD_DIR" cd -P $@ > /dev/null
+            ;;
+        esac
+        shift
+    done
+}
+
+cdd $@

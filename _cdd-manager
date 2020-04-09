@@ -1,0 +1,58 @@
+#compdef cdd-manager
+
+function _cdd-manager () {
+    local context curcontext=$curcontext state line
+    declare -A opt_args
+    local ret=1
+    
+    _arguments -C \
+    '(- : *)'{-h,--help}'[show help]' \
+    '1: :__cdd_commands' \
+    '*: :->args'\
+    && ret=0
+    
+    case $state in
+        args)
+            case $words[2] in
+                add)
+                    _arguments -C \
+                    '*:: :->file'
+                    case $state in
+                        file)
+                            line[CURRENT]=()
+                            line=( ${line//(#m)[\[\]()\\*?#<>~\^\|]/\\$MATCH} )
+                            _files -F line  &&ret=0
+                        ;;
+                    esac
+                ;;
+                remove)
+                    _arguments -C \
+                    '*:: :->file'
+                    case $state in
+                        file)
+                            line[CURRENT]=()
+                            line=( ${line//(#m)[\[\]()\\*?#<>~\^\|]/\\$MATCH} )
+                            _files -W "$CDD_DIR" -F line  &&ret=0
+                        ;;
+                    esac
+                ;;
+                list)
+                    
+                ;;
+            esac
+        ;;
+    esac
+    
+    return ret
+}
+
+__cdd_commands () {
+    local -a _c
+    _c=(
+        'add:add cdd link'
+        'remove:remove cdd link'
+        'list:List cdd links'
+    )
+    
+    _describe -t commands Commands _c
+}
